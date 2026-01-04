@@ -6,15 +6,52 @@ import { $filters } from "../stores/filters";
 
 type Props = { data: CrimeRow[] };
 
-// Iconos por categoría (debe coincidir con MapView)
-const CRIME_ICONS: Record<string, { emoji: string; color: string }> = {
-    "ROBO/HURTO": { emoji: "💰", color: "#f59e0b" },
-    "VIOLENCIA FAMILIAR": { emoji: "👪", color: "#8b5cf6" },
-    "ROBO ARMADO": { emoji: "🔫", color: "#ef4444" },
-    "ROBO DE CELULAR": { emoji: "📱", color: "#3b82f6" },
-    "ROBO DE VEHICULO": { emoji: "🚗", color: "#10b981" },
-    OTROS: { emoji: "⚠️", color: "#6b7280" },
+// Iconos de crimen (debe coincidir con MapView)
+const CRIME_ICONS = {
+    VEHICULO: { emoji: "🚗", color: "#10b981", label: "Robo de Vehiculo" },
+    CELULAR: { emoji: "📱", color: "#3b82f6", label: "Robo de Celular" },
+    ARMA: { emoji: "🔫", color: "#ef4444", label: "Robo Armado" },
+    VIOLENCIA: { emoji: "👪", color: "#8b5cf6", label: "Violencia Familiar" },
+    DINERO: { emoji: "💰", color: "#f59e0b", label: "Robo de Dinero" },
+    OTROS: { emoji: "⚠️", color: "#6b7280", label: "Otros" },
 };
+
+// Detectar tipo de icono basado en el tipo de crimen
+function detectarTipoIcono(tipo: string, categoria: string): keyof typeof CRIME_ICONS {
+    const tipoUpper = tipo.toUpperCase();
+    const catUpper = categoria.toUpperCase();
+
+    if (tipoUpper.includes("VEHICULO") || tipoUpper.includes("VEHÍCULO")) {
+        return "VEHICULO";
+    }
+    if (tipoUpper.includes("CELULAR")) {
+        return "CELULAR";
+    }
+    if (tipoUpper.includes("ARMA") || tipoUpper.includes("ASALTO")) {
+        return "ARMA";
+    }
+    if (tipoUpper.includes("VIOLENCIA") || tipoUpper.includes("FAMILIAR")) {
+        return "VIOLENCIA";
+    }
+    if (tipoUpper.includes("DINERO")) {
+        return "DINERO";
+    }
+
+    if (catUpper.includes("VEHICULO") || catUpper.includes("VEHÍCULO")) {
+        return "VEHICULO";
+    }
+    if (catUpper.includes("CELULAR")) {
+        return "CELULAR";
+    }
+    if (catUpper.includes("ARMADO")) {
+        return "ARMA";
+    }
+    if (catUpper.includes("VIOLENCIA")) {
+        return "VIOLENCIA";
+    }
+
+    return "OTROS";
+}
 
 export default function StatsPanel({ data }: Props) {
     const filters = useStore($filters);
@@ -23,13 +60,15 @@ export default function StatsPanel({ data }: Props) {
         [data, filters]
     );
 
+    // Contar por tipo de icono (no por categoría)
     const counts = useMemo(() => {
-        const byCat: Record<string, number> = {};
-        for (const r of filtered)
-            byCat[r.Categoria_Crimen] = (byCat[r.Categoria_Crimen] || 0) + 1;
-        return Object.entries(byCat)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 8);
+        const byIcon: Record<string, number> = {};
+        for (const r of filtered) {
+            const iconType = detectarTipoIcono(r.Tipo_Crimen, r.Categoria_Crimen);
+            byIcon[iconType] = (byIcon[iconType] || 0) + 1;
+        }
+        return Object.entries(byIcon)
+            .sort((a, b) => b[1] - a[1]);
     }, [filtered]);
 
     const total = filtered.length;
@@ -49,16 +88,16 @@ export default function StatsPanel({ data }: Props) {
                 </p>
             </div>
 
-            {/* Estadísticas por categoría */}
+            {/* Estadísticas por tipo */}
             <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-3">
-                    Por categoria
+                    Por tipo de crimen
                 </h3>
                 <ul className="space-y-2">
-                    {counts.map(([k, v]) => {
-                        const icon = CRIME_ICONS[k] || CRIME_ICONS["OTROS"];
+                    {counts.map(([iconType, count]) => {
+                        const icon = CRIME_ICONS[iconType as keyof typeof CRIME_ICONS];
                         return (
-                            <li key={k} className="text-sm">
+                            <li key={iconType} className="text-sm">
                                 <div className="flex items-center gap-2 mb-1">
                                     <span
                                         className="w-6 h-6 rounded-full flex items-center justify-center text-xs"
@@ -67,17 +106,17 @@ export default function StatsPanel({ data }: Props) {
                                         {icon.emoji}
                                     </span>
                                     <span className="text-gray-700 truncate flex-1">
-                                        {k}
+                                        {icon.label}
                                     </span>
                                     <span className="font-semibold text-gray-900">
-                                        {v.toLocaleString()}
+                                        {count.toLocaleString()}
                                     </span>
                                 </div>
                                 <div className="w-full bg-gray-200 rounded-full h-1.5 ml-8">
                                     <div
                                         className="h-1.5 rounded-full transition-all duration-300"
                                         style={{
-                                            width: `${(v / maxCount) * 100}%`,
+                                            width: `${(count / maxCount) * 100}%`,
                                             backgroundColor: icon.color,
                                         }}
                                     />
@@ -94,8 +133,8 @@ export default function StatsPanel({ data }: Props) {
                     Leyenda
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
-                    {Object.entries(CRIME_ICONS).map(([cat, icon]) => (
-                        <div key={cat} className="flex items-center gap-1.5">
+                    {Object.entries(CRIME_ICONS).map(([key, icon]) => (
+                        <div key={key} className="flex items-center gap-1.5">
                             <span
                                 className="w-5 h-5 rounded-full flex items-center justify-center text-xs"
                                 style={{ backgroundColor: icon.color }}
@@ -103,7 +142,7 @@ export default function StatsPanel({ data }: Props) {
                                 {icon.emoji}
                             </span>
                             <span className="text-xs text-gray-600 truncate">
-                                {cat}
+                                {icon.label}
                             </span>
                         </div>
                     ))}

@@ -16,18 +16,62 @@ type Props = { data: CrimeRow[] };
 const IQUITOS_CENTER: [number, number] = [-3.7491, -73.2538];
 const INITIAL_ZOOM = 13;
 
-// Iconos por categoría de crimen
-const CRIME_ICONS: Record<string, { emoji: string; color: string }> = {
-    "ROBO/HURTO": { emoji: "💰", color: "#f59e0b" },
-    "VIOLENCIA FAMILIAR": { emoji: "👪", color: "#8b5cf6" },
-    "ROBO ARMADO": { emoji: "🔫", color: "#ef4444" },
-    "ROBO DE CELULAR": { emoji: "📱", color: "#3b82f6" },
-    "ROBO DE VEHICULO": { emoji: "🚗", color: "#10b981" },
-    OTROS: { emoji: "⚠️", color: "#6b7280" },
+// Iconos de crimen
+const CRIME_ICONS = {
+    VEHICULO: { emoji: "🚗", color: "#10b981", label: "Robo de Vehiculo" },
+    CELULAR: { emoji: "📱", color: "#3b82f6", label: "Robo de Celular" },
+    ARMA: { emoji: "🔫", color: "#ef4444", label: "Robo Armado" },
+    VIOLENCIA: { emoji: "👪", color: "#8b5cf6", label: "Violencia Familiar" },
+    DINERO: { emoji: "💰", color: "#f59e0b", label: "Robo de Dinero" },
+    OTROS: { emoji: "⚠️", color: "#6b7280", label: "Otros" },
 };
 
-function createCrimeIcon(categoria: string): L.DivIcon {
-    const config = CRIME_ICONS[categoria] || CRIME_ICONS["OTROS"];
+// Detectar tipo de icono basado en el tipo de crimen
+function detectarTipoIcono(tipo: string, categoria: string): keyof typeof CRIME_ICONS {
+    const tipoUpper = tipo.toUpperCase();
+    const catUpper = categoria.toUpperCase();
+
+    // Detectar por tipo de crimen (más específico)
+    if (tipoUpper.includes("VEHICULO") || tipoUpper.includes("VEHÍCULO")) {
+        return "VEHICULO";
+    }
+    if (tipoUpper.includes("CELULAR")) {
+        return "CELULAR";
+    }
+    if (tipoUpper.includes("ARMA") || tipoUpper.includes("ASALTO")) {
+        return "ARMA";
+    }
+    if (tipoUpper.includes("VIOLENCIA") || tipoUpper.includes("FAMILIAR")) {
+        return "VIOLENCIA";
+    }
+    if (tipoUpper.includes("DINERO")) {
+        return "DINERO";
+    }
+
+    // Fallback por categoría
+    if (catUpper.includes("VEHICULO") || catUpper.includes("VEHÍCULO")) {
+        return "VEHICULO";
+    }
+    if (catUpper.includes("CELULAR")) {
+        return "CELULAR";
+    }
+    if (catUpper.includes("ARMADO")) {
+        return "ARMA";
+    }
+    if (catUpper.includes("VIOLENCIA")) {
+        return "VIOLENCIA";
+    }
+
+    return "OTROS";
+}
+
+function getIconConfig(tipo: string, categoria: string) {
+    const tipoIcono = detectarTipoIcono(tipo, categoria);
+    return CRIME_ICONS[tipoIcono];
+}
+
+function createCrimeIcon(tipo: string, categoria: string): L.DivIcon {
+    const config = getIconConfig(tipo, categoria);
 
     return L.divIcon({
         className: "crime-marker",
@@ -170,8 +214,8 @@ export default function MapView({ data }: Props) {
             if (lat == null || lng == null) continue;
 
             const diaES = traducirDia(r.Nombre_Dia);
-            const icon = createCrimeIcon(r.Categoria_Crimen);
-            const iconConfig = CRIME_ICONS[r.Categoria_Crimen] || CRIME_ICONS["OTROS"];
+            const icon = createCrimeIcon(r.Tipo_Crimen, r.Categoria_Crimen);
+            const iconConfig = getIconConfig(r.Tipo_Crimen, r.Categoria_Crimen);
 
             const m = L.marker([lat, lng], { icon });
             m.bindPopup(`

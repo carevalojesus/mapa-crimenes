@@ -42,16 +42,16 @@ src/
     └── index.astro         # Pagina principal
 ```
 
-## Categorias de Crimen
+## Tipos de Crimen (Iconos)
 
-| Icono | Categoria | Color |
-|-------|-----------|-------|
-| 💰 | ROBO/HURTO | Amarillo |
-| 👪 | VIOLENCIA FAMILIAR | Violeta |
-| 🔫 | ROBO ARMADO | Rojo |
-| 📱 | ROBO DE CELULAR | Azul |
-| 🚗 | ROBO DE VEHICULO | Verde |
-| ⚠️ | OTROS | Gris |
+| Icono | Tipo | Color | Detecta |
+|-------|------|-------|---------|
+| 🚗 | Robo de Vehiculo | Verde | Tipos con "vehiculo" o "vehículo" |
+| 📱 | Robo de Celular | Azul | Tipos con "celular" |
+| 🔫 | Robo Armado | Rojo | Tipos con "arma" o "asalto" |
+| 👪 | Violencia Familiar | Violeta | Tipos con "violencia" o "familiar" |
+| 💰 | Robo de Dinero | Amarillo | Tipos con "dinero" |
+| ⚠️ | Otros | Gris | Todo lo demas |
 
 ## Instalacion
 
