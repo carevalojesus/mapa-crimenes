@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+/* Custom styles */
+body {
+    @apply m-0 p-0 font-sans antialiased;
+}
+
+/* Crime marker icon */
+.crime-marker {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Custom cluster icons */
+.custom-cluster {
+    background: transparent !important;
+    border: none !important;
+}
+
+.cluster-icon {
+    @apply flex items-center justify-center rounded-full text-white font-bold shadow-lg;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: 3px solid white;
+}
+
+.cluster-icon span {
+    @apply text-sm;
+}
+
+.cluster-small {
+    @apply w-10 h-10 text-sm;
+}
+
+.cluster-medium {
+    @apply w-12 h-12 text-base;
+}
+
+.cluster-large {
+    @apply w-14 h-14 text-lg;
+}
+
+/* Leaflet popup overrides */
+.leaflet-popup-content-wrapper {
+    @apply rounded-lg shadow-xl p-0 overflow-hidden;
+}
+
+.leaflet-popup-content {
+    @apply m-0 text-sm;
+}
+
+/* Crime popup styles */
+.crime-popup {
+    min-width: 200px;
+}
+
+.popup-header {
+    @apply flex items-center gap-2 px-3 py-2 text-white;
+}
+
+.popup-emoji {
+    @apply text-xl;
+}
+
+.popup-category {
+    @apply font-bold text-sm;
+}
+
+.popup-body {
+    @apply p-3 bg-white;
+}
+
+.popup-type {
+    @apply text-gray-700 font-medium mb-2 pb-2 border-b border-gray-200;
+}
+
+.popup-details {
+    @apply space-y-1;
+}
+
+.popup-details p {
+    @apply text-xs text-gray-600 m-0;
+}
+
+.popup-details strong {
+    @apply text-gray-800;
+}
+
+/* District tooltip styles */
+.district-tooltip {
+    @apply bg-white/95 border-none rounded-lg px-3 py-1.5 font-semibold text-gray-800 shadow-md;
+}
+
+/* Leyenda de iconos */
+.legend {
+    @apply bg-white rounded-lg shadow-lg p-3;
+}
+
+.legend-item {
+    @apply flex items-center gap-2 py-1;
+}
+
+.legend-color {
+    @apply w-4 h-4 rounded-full;
+}
+
+.legend-label {
+    @apply text-xs text-gray-700;
+}

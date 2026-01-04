@@ -1,46 +1,89 @@
-# Astro Starter Kit: Basics
+# Mapa de Criminalidad - Iquitos
 
-```sh
-pnpm create astro@latest -- --template basics
+Aplicacion web interactiva para visualizar datos de criminalidad en la ciudad de Iquitos, Peru. Permite explorar incidentes por ubicacion, tipo de crimen, fecha y periodo del dia.
+
+## Caracteristicas
+
+- **Mapa interactivo** con marcadores agrupados (clusters) y mapa de calor
+- **Iconos por categoria** de crimen para identificacion visual rapida
+- **Filtros avanzados**: por año, mes, dia, periodo, categoria y tipo de crimen
+- **Estadisticas en tiempo real** que se actualizan segun los filtros
+- **Distritos de Iquitos** con GeoJSON (Iquitos, Punchana, Belen, San Juan Bautista)
+
+## Tecnologias
+
+| Tecnologia | Uso |
+|------------|-----|
+| [Astro](https://astro.build) | Framework web |
+| [Preact](https://preactjs.com) | Componentes reactivos |
+| [TailwindCSS](https://tailwindcss.com) | Estilos |
+| [Leaflet](https://leafletjs.com) | Mapas interactivos |
+| [Nanostores](https://github.com/nanostores/nanostores) | Estado global |
+
+## Estructura del Proyecto
+
+```
+src/
+├── components/
+│   ├── FiltersPanel.tsx    # Panel de filtros
+│   ├── MapView.tsx         # Mapa con Leaflet
+│   └── StatsPanel.tsx      # Estadisticas y leyenda
+├── data/
+│   ├── datos_crimenes_limpios.json  # Datos de crimenes
+│   └── iquitos-distritos.json       # GeoJSON de distritos
+├── lib/
+│   ├── crime.ts            # Tipos y utilidades
+│   └── filters.ts          # Logica de filtrado
+├── stores/
+│   └── filters.ts          # Estado de filtros
+├── styles/
+│   └── global.css          # Estilos globales
+└── pages/
+    └── index.astro         # Pagina principal
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Categorias de Crimen
 
-## 🚀 Project Structure
+| Icono | Categoria | Color |
+|-------|-----------|-------|
+| 💰 | ROBO/HURTO | Amarillo |
+| 👪 | VIOLENCIA FAMILIAR | Violeta |
+| 🔫 | ROBO ARMADO | Rojo |
+| 📱 | ROBO DE CELULAR | Azul |
+| 🚗 | ROBO DE VEHICULO | Verde |
+| ⚠️ | OTROS | Gris |
 
-Inside of your Astro project, you'll see the following folders and files:
+## Instalacion
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```bash
+# Clonar repositorio
+git clone <repo-url>
+cd crimen-mapa
+
+# Instalar dependencias
+pnpm install
+
+# Iniciar servidor de desarrollo
+pnpm dev
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Comandos
 
-## 🧞 Commands
+| Comando | Accion |
+|---------|--------|
+| `pnpm dev` | Inicia servidor en `localhost:4321` |
+| `pnpm build` | Genera build de produccion en `./dist/` |
+| `pnpm preview` | Previsualiza el build localmente |
 
-All commands are run from the root of the project, from a terminal:
+## Datos
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+Los datos incluyen registros de crimenes desde 2019 hasta 2025, con la siguiente informacion:
 
-## 👀 Want to learn more?
+- Ubicacion (latitud, longitud)
+- Fecha y hora del incidente
+- Tipo y categoria de crimen
+- Periodo del dia (Madrugada, Mañana, Tarde, Noche)
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Licencia
+
+MIT

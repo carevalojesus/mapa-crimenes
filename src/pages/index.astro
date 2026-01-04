@@ -1,11 +1,42 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import MapView from "../components/MapView";
+import FiltersPanel from "../components/FiltersPanel";
+import StatsPanel from "../components/StatsPanel";
+import "../styles/global.css";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import data from "../data/datos_crimenes_limpios.json";
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Mapa de Criminalidad</title>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet/dist/leaflet.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css"
+        />
+    </head>
+    <body class="bg-gray-50">
+        <main class="grid grid-cols-[380px_1fr] h-screen">
+            <aside class="p-5 bg-white border-r border-gray-200 overflow-y-auto shadow-sm">
+                <h1 class="text-xl font-bold text-gray-800 mb-4">Mapa de Criminalidad</h1>
+                <FiltersPanel client:load data={data} />
+                <hr class="my-5 border-gray-200" />
+                <StatsPanel client:load data={data} />
+            </aside>
+
+            <section class="h-full">
+                <MapView client:only="preact" data={data} />
+            </section>
+        </main>
+    </body>
+</html>
